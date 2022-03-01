@@ -30,7 +30,7 @@ Window::Window(int width, int height, const char* title)
 
 	//Torna o contexto atual
 	glfwMakeContextCurrent(m_Window);
-
+	glewExperimental = GLU_TRUE;
 	GLenum glewInitErr = glewInit();
 
 	if (glewInitErr != GLEW_OK)

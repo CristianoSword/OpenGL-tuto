@@ -69,15 +69,60 @@ MyScene::MyScene()
 	glAttachShader(m_ShaderProgram, m_FragmentShader);
 	glDeleteShader(m_FragmentShader);
 
-	//link shader program
+	//Link shader program
 	glLinkProgram(m_ShaderProgram);
 	checkProgramLink(m_ShaderProgram);
 
 	glUseProgram(m_ShaderProgram);
-
 	glClearColor(0.5f, 0.5f, 1, 0);
-	
 
+	//Vertices
+	m_Vertices = new GLfloat[18]{
+		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+		 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+	};
+
+	//Vertices Buffer Object
+	glGenBuffers(1, &m_VBO);
+
+	// Cria um ID na GPU pra um array de Buffers
+	glGenVertexArrays(1, &m_VAO);
+	glBindVertexArray(m_VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+	//Vertice Array Object - VAO
+
+	//Vertices e atributos de vertcices GL_ARRAY_BUFFER
+	glBufferData(GL_ARRAY_BUFFER, 
+		18 * sizeof(GL_FLOAT),
+		m_Vertices, 
+		GL_STATIC_DRAW);
+
+	//Vertices
+	glVertexAttribPointer(0,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		6 * sizeof(GL_FLOAT),
+		(GLvoid*)0);
+	
+	//Cores
+	glVertexAttribPointer(1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		6 * sizeof(GL_FLOAT),
+		(GLvoid*)(3 * sizeof(GL_FLOAT)));
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
+	glBindVertexArray(0);
+
+	//Instala o programa como parte da pipeline de renderizador
+	glUseProgram(m_ShaderProgram);
 }
 
 MyScene::~MyScene()
@@ -89,7 +134,17 @@ MyScene::~MyScene()
 void MyScene::update()
 {
 	//afeta o resultado final na tela
-	std::cout << "MyScene update" << std::endl;
+	//std::cout << "MyScene update" << std::endl;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// Instala o programa como parte da renderizacao
+	glUseProgram(m_ShaderProgram);
+	glBindVertexArray(m_VAO);
+	glDrawArrays( GL_TRIANGLES, 0, 3);
+
+	glBindVertexArray(0);
+	
 }
+
+
+
